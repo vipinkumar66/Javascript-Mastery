@@ -2,11 +2,14 @@
 const gameBoard = document.getElementById("game__board");
 
 // Define game variables
+const gridSize = 20;
 let snake = [{x:10, y:10}] //this basically represents the center of the board
+let food = generateFood();
 
 function draw(){
     gameBoard.innerHTML = "";
     drawSnake();
+    drawFood();
 }
 
 // Draw Snake
@@ -33,3 +36,15 @@ function setPosition(element, position){
 
 // Testing Draw Function
 draw()
+
+function drawFood(){
+    const foodElement = createGameElement("div", "food");
+    setPosition(foodElement, food);
+    gameBoard.appendChild(foodElement);
+}
+
+function generateFood(){
+    const x = Math.floor(Math.random() * gridSize) +1;
+    const y = Math.floor(Math.random() * gridSize) +1;
+    return {x,y};
+}
