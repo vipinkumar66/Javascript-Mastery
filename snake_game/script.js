@@ -1,5 +1,7 @@
 // Define Html elements
 const gameBoard = document.getElementById("game__board");
+const instructionDetail = document.getElementById("game__instructions");
+const logo = document.getElementById("logo");
 
 // Define game variables
 const gridSize = 20;
@@ -7,6 +9,10 @@ let snake = [{x:10, y:10}] //this basically represents the center of the board
 
 let food = generateFood();
 let direction = "up";
+let gameInterval;
+let gameSpeedDelay = 200;
+let gameStarted = false;
+
 
 function draw(){
     gameBoard.innerHTML = "";
@@ -70,11 +76,59 @@ function moveSnake(){
             break
     }
     snake.unshift(head);
-    snake.pop();
+    // snake.pop();
+
+    if (head.x === food.x && head.y === food.y){
+        food = generateFood();
+        clearInterval();
+        gameInterval = setInterval(()=>{
+            moveSnake();
+            draw();
+        }, gameSpeedDelay);
+    }else{
+        snake.pop();
+    }
 }
 
 // Test Moving
-setInterval(() => {
-   moveSnake();
-   draw(); //Draw again new position
-}, 200);
+// setInterval(() => {
+//    moveSnake();
+//    draw(); //Draw again new position
+// }, 200);
+
+function startGameFunction(){
+    gameStarted = true;
+    instructionDetail.style.display = "none";
+    logo.style.display = "none";
+    gameInterval = setInterval(()=>{
+        moveSnake();
+        // checkCollsion();
+        draw();
+    }, gameSpeedDelay);
+
+}
+
+// Key press listener event
+function handleKeyPress(event){
+    if((!gameStarted && event.code === "Space") ||
+    (!gameStarted && event.key === " ") ){
+        startGameFunction();
+    }else{
+        switch(event.key){
+            case "ArrowUp":
+                direction = "up";
+                break;
+            case "ArrowDown":
+                direction = "down";
+                break;
+            case "ArrowLeft":
+                direction = "left";
+                break;
+            case "ArrowRight":
+                direction = "right";
+                break;
+        }
+    }
+}
+
+document.addEventListener('keydown', handleKeyPress);
